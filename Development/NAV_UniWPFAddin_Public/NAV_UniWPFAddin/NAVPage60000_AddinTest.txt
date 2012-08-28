@@ -1,0 +1,366 @@
+OBJECT Page 60000 Test UniWPF_Addin
+{
+  OBJECT-PROPERTIES
+  {
+    Date=11.08.10;
+    Time=[ 8:24:29];
+    Modified=Yes;
+    Version List=WPFAddin;
+  }
+  PROPERTIES
+  {
+    PageType=Card;
+    OnInit=BEGIN
+             InitXAML;
+           END;
+
+    ActionList=ACTIONS
+    {
+      { 1000000002;  ;ActionContainer;
+                      Name=Root;
+                      ActionContainerType=ActionItems }
+      { 1000000005;1 ;ActionGroup;
+                      Name=Get Property;
+                      ActionContainerType=NewDocumentItems }
+      { 1000000003;2 ;Action    ;
+                      Name=Get Label Text;
+                      CaptionML=ENU=Get Label Text;
+                      Promoted=Yes;
+                      PromotedIsBig=Yes;
+                      PromotedCategory=Process;
+                      RunFormMode=View;
+                      OnAction=BEGIN
+                                 CLEAR(Text);
+                                 Text.ADDTEXT('<Root>');
+                                 Text.ADDTEXT('<GetProperty Object="lblResult" Name="Content"/>');
+                                 Text.ADDTEXT('</Root>');
+                               END;
+                                }
+      { 1000000006;2 ;Action    ;
+                      Name=Get button "1" width;
+                      Promoted=Yes;
+                      PromotedIsBig=Yes;
+                      PromotedCategory=Process;
+                      OnAction=BEGIN
+                                 CLEAR(Text);
+                                 Text.ADDTEXT('<Root>');
+                                 Text.ADDTEXT('<GetProperty Object="btnNum1" Name="ActualWidth"/>');
+                                 Text.ADDTEXT('</Root>');
+                               END;
+                                }
+      { 1000000007;2 ;Action    ;
+                      Name=Both;
+                      Promoted=Yes;
+                      PromotedIsBig=Yes;
+                      PromotedCategory=Process;
+                      OnAction=BEGIN
+                                 CLEAR(Text);
+                                 Text.ADDTEXT('<Root>');
+                                 Text.ADDTEXT('<GetProperty Object="btnNum1" Name="ActualWidth"/>');
+                                 Text.ADDTEXT('<GetProperty Object="lblResult" Name="Content"/>');
+                                 Text.ADDTEXT('</Root>');
+                               END;
+                                }
+    }
+  }
+  CONTROLS
+  {
+    { 1000000000;0;Container;
+                ContainerType=ContentArea }
+
+    { 1000000001;1;Group  ;
+                Name=General;
+                GroupType=Group }
+
+    { 1000000004;2;Field  ;
+                Name=Calculator in WPF;
+                SourceExpr=Text;
+                ControlAddIn=[NAVERTICA.DynamicsNAV.UniWPFAddin;PublicKeyToken=cceba51df27660cc];
+                OnControlAddIn=BEGIN
+                                 IF Data.TEXTPOS('GetProperty')>0 THEN BEGIN
+                                   MESSAGE('%1',Data);
+                                   CLEAR(Text);
+                                 END ELSE BEGIN
+                                   CASE Index OF
+                                     1,2,3,4,5,6,7,8,9,0: Result := Result + FORMAT(Index);
+                                     100: Result := '';
+                                   END;
+                                   SetResult;
+                                 END;
+                               END;
+                                }
+
+  }
+  CODE
+  {
+    VAR
+      Text@1000000000 : BigText;
+      Result@1000000001 : Text[30];
+
+    PROCEDURE InitXAML@1000000001();
+    BEGIN
+      CLEAR(Text);
+      Text.ADDTEXT('<Root><Element><Canvas Name="canvas1"');
+      Text.ADDTEXT(' xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"');
+      Text.ADDTEXT(' xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"');
+      Text.ADDTEXT(' xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" ');
+      Text.ADDTEXT(' xmlns:d="http://schemas.microsoft.com/expression/blend/2008" ');
+      Text.ADDTEXT(' Background="White">');//Height="100" Width="100"
+
+      Text.ADDTEXT('  <Canvas.Resources>');
+      Text.ADDTEXT('    <RadialGradientBrush');
+      Text.ADDTEXT('      Center="0.5,0.5"');
+      Text.ADDTEXT('      RadiusX="1.0"');
+      Text.ADDTEXT('      RadiusY="1.0"');
+      Text.ADDTEXT('      x:Key="brOperator">');
+      Text.ADDTEXT('      <GradientStop Color="Lime" Offset="0.0" />');
+      Text.ADDTEXT('      <GradientStop Color="Green" Offset="1.0" />');
+      Text.ADDTEXT('    </RadialGradientBrush>');
+      Text.ADDTEXT('    <RadialGradientBrush');
+      Text.ADDTEXT('      Center="0.5,0.5"');
+      Text.ADDTEXT('      RadiusX="1.0"');
+      Text.ADDTEXT('      RadiusY="1.0"');
+      Text.ADDTEXT('      x:Key="brClear">');
+      Text.ADDTEXT('      <GradientStop Color="AliceBlue" Offset="0.0" />');
+      Text.ADDTEXT('      <GradientStop Color="Blue" Offset="1.0" />');
+      Text.ADDTEXT('    </RadialGradientBrush>');
+      Text.ADDTEXT('    <RadialGradientBrush');
+      Text.ADDTEXT('      Center="0.5,0.5"');
+      Text.ADDTEXT('      RadiusX="1.0"');
+      Text.ADDTEXT('      RadiusY="1.0"');
+      Text.ADDTEXT('      x:Key="brNumber">');
+      Text.ADDTEXT('      <GradientStop Color="Yellow" Offset="0.0" />');
+      Text.ADDTEXT('      <GradientStop Color="Orange" Offset="1.0" />');
+      Text.ADDTEXT('    </RadialGradientBrush>');
+      Text.ADDTEXT('    <LinearGradientBrush');
+      Text.ADDTEXT('       x:Key="brResult"');
+      Text.ADDTEXT('       StartPoint="0,0"');
+      Text.ADDTEXT('       EndPoint="1,1"');
+      Text.ADDTEXT('    >');
+      Text.ADDTEXT('      <GradientStop Color="LightBlue" Offset="0.0" />');
+      Text.ADDTEXT('      <GradientStop Color="AliceBlue" Offset="1.0" />');
+      Text.ADDTEXT('    </LinearGradientBrush>');
+      Text.ADDTEXT('    <Border x:Key="bdrSelected" Width="5" />');
+      Text.ADDTEXT('    <Style x:Key="styButton">');
+      Text.ADDTEXT('      <Setter Property="Control.Background" Value="{StaticResource brNumber}" />');
+      Text.ADDTEXT('    </Style>');
+      Text.ADDTEXT('    <Style x:Key="styOperator">');
+      Text.ADDTEXT('      <Setter Property="Control.Background" Value="{StaticResource brOperator}" />');
+      Text.ADDTEXT('    </Style>');
+      Text.ADDTEXT('    <Style x:Key="styClear">');
+      Text.ADDTEXT('      <Setter Property="Control.Background" Value="{StaticResource brClear}" />');
+      Text.ADDTEXT('    </Style>');
+      Text.ADDTEXT('  </Canvas.Resources>');
+      Text.ADDTEXT('');
+      Text.ADDTEXT('  <Grid Width="{Binding ElementName=canvas1, Path=ActualWidth}" ');
+      Text.ADDTEXT('    Height="{Binding ElementName=canvas1, Path=ActualHeight}">');
+      Text.ADDTEXT('    <Grid.ColumnDefinitions>');
+      Text.ADDTEXT('      <ColumnDefinition Width="0.25*" />');
+      Text.ADDTEXT('      <ColumnDefinition Width="0.25*" />');
+      Text.ADDTEXT('      <ColumnDefinition Width="0.25*" />');
+      Text.ADDTEXT('      <ColumnDefinition Width="0.25*" />');
+      Text.ADDTEXT('    </Grid.ColumnDefinitions>');
+      Text.ADDTEXT('    <Grid.RowDefinitions>');
+      Text.ADDTEXT('      <RowDefinition Height="0.10*" />');
+      Text.ADDTEXT('      <RowDefinition Height="0.22*" />');
+      Text.ADDTEXT('      <RowDefinition Height="0.17*" />');
+      Text.ADDTEXT('      <RowDefinition Height="0.17*" />');
+      Text.ADDTEXT('      <RowDefinition Height="0.17*" />');
+      Text.ADDTEXT('      <RowDefinition Height="0.17*" />');
+      Text.ADDTEXT('    </Grid.RowDefinitions>');
+      Text.ADDTEXT('    <!-- Row 1 -->');
+      Text.ADDTEXT('      <Button');
+      Text.ADDTEXT('        Style="{StaticResource styClear}"');
+      Text.ADDTEXT('        Grid.Row="1" Margin="2,20,2,2"');
+      Text.ADDTEXT('        Name="btnCe"');
+      Text.ADDTEXT('        Focusable="False" Tag="100">CE</Button>');
+      Text.ADDTEXT('      <Button');
+      Text.ADDTEXT('        Style="{StaticResource styClear}"');
+      Text.ADDTEXT('        Grid.Row="1"');
+      Text.ADDTEXT('        Grid.Column="1"');
+      Text.ADDTEXT('        Margin="2,20,2,2"');
+      Text.ADDTEXT('        Name="btnC" Focusable="False" Tag="101">C</Button>');
+      Text.ADDTEXT('');
+      Text.ADDTEXT('      <Button');
+      Text.ADDTEXT('        Style="{StaticResource styClear}"');
+      Text.ADDTEXT('        Grid.Row="1"');
+      Text.ADDTEXT('        Grid.Column="3"');
+      Text.ADDTEXT('        Margin="2,20,2,2"');
+      Text.ADDTEXT('        Name="btnEquals" Focusable="False" Tag="200">=</Button>');
+      Text.ADDTEXT('    <!-- Row 2 -->');
+      Text.ADDTEXT('      <Button');
+      Text.ADDTEXT('        Background="{StaticResource brNumber}"');
+      Text.ADDTEXT('        Grid.Row="2"');
+      Text.ADDTEXT('        Grid.Column="0"');
+      Text.ADDTEXT('        Margin="2,2,2,2"');
+      Text.ADDTEXT('        Name="btnNum7" Focusable="False" Tag="7">7</Button>');
+      Text.ADDTEXT('      <Button');
+      Text.ADDTEXT('        Background="{StaticResource brNumber}"');
+      Text.ADDTEXT('        Grid.Row="2"');
+      Text.ADDTEXT('        Grid.Column="1"');
+      Text.ADDTEXT('        Margin="2,2,2,2"');
+      Text.ADDTEXT('        Name="btnNum8" Focusable="False" Tag="8">8</Button>');
+      Text.ADDTEXT('      <Button');
+      Text.ADDTEXT('        Background="{StaticResource brNumber}"');
+      Text.ADDTEXT('        Grid.Row="2"');
+      Text.ADDTEXT('        Grid.Column="2"');
+      Text.ADDTEXT('        Margin="2,2,2,2"');
+      Text.ADDTEXT('        Name="btnNum9" Focusable="False" Tag="9">9</Button>');
+      Text.ADDTEXT('      <Button');
+      Text.ADDTEXT('        Style="{StaticResource styOperator}"');
+      Text.ADDTEXT('        Grid.Row="2"');
+      Text.ADDTEXT('        Grid.Column="3"');
+      Text.ADDTEXT('        Margin="2,2,2,2"');
+      Text.ADDTEXT('        Name="btnDivide" Focusable="False" Tag="201">/</Button>');
+      Text.ADDTEXT('      <!-- Row 3 -->');
+      Text.ADDTEXT('      <Button');
+      Text.ADDTEXT('        Background="{StaticResource brNumber}"');
+      Text.ADDTEXT('        Grid.Row="3"');
+      Text.ADDTEXT('        Grid.Column="0"');
+      Text.ADDTEXT('        Margin="2,2,2,2"');
+      Text.ADDTEXT('        Name="btnNum4" Focusable="False" Tag="4">4</Button>');
+      Text.ADDTEXT('      <Button');
+      Text.ADDTEXT('        Background="{StaticResource brNumber}"');
+      Text.ADDTEXT('        Grid.Row="3"');
+      Text.ADDTEXT('        Grid.Column="1"');
+      Text.ADDTEXT('        Margin="2,2,2,2"');
+      Text.ADDTEXT('        Name="btnNum5" Focusable="False" Tag="5">5</Button>');
+      Text.ADDTEXT('      <Button');
+      Text.ADDTEXT('        Background="{StaticResource brNumber}"');
+      Text.ADDTEXT('        Grid.Row="3"');
+      Text.ADDTEXT('        Grid.Column="2"');
+      Text.ADDTEXT('        Margin="2,2,2,2"');
+      Text.ADDTEXT('        Name="btnNum6" Focusable="False" Tag="6">6</Button>');
+      Text.ADDTEXT('      <Button');
+      Text.ADDTEXT('        Style="{StaticResource styOperator}"');
+      Text.ADDTEXT('        Grid.Row="3"');
+      Text.ADDTEXT('        Grid.Column="3"');
+      Text.ADDTEXT('        Margin="2,2,2,2"');
+      Text.ADDTEXT('        Name="btnTimes" Focusable="False" Tag="202">*</Button>');
+      Text.ADDTEXT('      <!-- Row 4 -->');
+      Text.ADDTEXT('      <Button');
+      Text.ADDTEXT('        Background="{StaticResource brNumber}"');
+      Text.ADDTEXT('        Grid.Row="4"');
+      Text.ADDTEXT('        Grid.Column="0"');
+      Text.ADDTEXT('        Margin="2,2,2,2"');
+      Text.ADDTEXT('        Name="btnNum1" Focusable="False" Tag="1">1</Button>');
+      Text.ADDTEXT('      <Button');
+      Text.ADDTEXT('        Background="{StaticResource brNumber}"');
+      Text.ADDTEXT('        Grid.Row="4"');
+      Text.ADDTEXT('        Grid.Column="1"');
+      Text.ADDTEXT('        Margin="2,2,2,2"');
+      Text.ADDTEXT('        Name="btnNum2" Focusable="False" Tag="2">2</Button>');
+      Text.ADDTEXT('      <Button');
+      Text.ADDTEXT('        Background="{StaticResource brNumber}"');
+      Text.ADDTEXT('        Grid.Row="4"');
+      Text.ADDTEXT('        Grid.Column="2"');
+      Text.ADDTEXT('        Margin="2,2,2,2"');
+      Text.ADDTEXT('        Name="btnNum3" Focusable="False" Tag="3">3</Button>');
+      Text.ADDTEXT('      <Button');
+      Text.ADDTEXT('        Style="{StaticResource styOperator}"');
+      Text.ADDTEXT('        Grid.Row="4"');
+      Text.ADDTEXT('        Grid.Column="3"');
+      Text.ADDTEXT('        Margin="2,2,2,2"');
+      Text.ADDTEXT('        Name="btnMinus" Focusable="False" Tag="203">-</Button>');
+      Text.ADDTEXT('      <!-- Row 5 -->');
+      Text.ADDTEXT('      <Button');
+      Text.ADDTEXT('        Background="{StaticResource brNumber}"');
+      Text.ADDTEXT('        Grid.Row="5"');
+      Text.ADDTEXT('        Grid.Column="0"');
+      Text.ADDTEXT('        Margin="2,2,2,2"');
+      Text.ADDTEXT('        Name="btnNum0" Focusable="False" Tag="0">0</Button>');
+      Text.ADDTEXT('      <Button');
+      Text.ADDTEXT('        Background="{StaticResource brNumber}"');
+      Text.ADDTEXT('        Grid.Row="5"');
+      Text.ADDTEXT('        Grid.Column="1"');
+      Text.ADDTEXT('        Margin="2,2,2,2"');
+      Text.ADDTEXT('        Name="btnPlusMinus" Focusable="False" Tag="204">+/-</Button>');
+      Text.ADDTEXT('      <Button');
+      Text.ADDTEXT('        Background="{StaticResource brNumber}"');
+      Text.ADDTEXT('        Grid.Row="5"');
+      Text.ADDTEXT('        Grid.Column="2"');
+      Text.ADDTEXT('        Margin="2,2,2,2"');
+      Text.ADDTEXT('        Name="btnDecimal" Focusable="False" Tag="205">.</Button>');
+      Text.ADDTEXT('      <Button');
+      Text.ADDTEXT('        Style="{StaticResource styOperator}"');
+      Text.ADDTEXT('        Grid.Row="5"');
+      Text.ADDTEXT('        Grid.Column="3"');
+      Text.ADDTEXT('        Margin="2,2,2,2"');
+      Text.ADDTEXT('        Name="btnPlus" Focusable="False" Tag="206">+</Button>');
+      Text.ADDTEXT('    <Label');
+      Text.ADDTEXT('      Background="{StaticResource brResult}"');
+      Text.ADDTEXT('      Grid.ColumnSpan="4"');
+      Text.ADDTEXT('      Margin="2,2,2,2"');
+      Text.ADDTEXT('      Name="lblResult"');
+      Text.ADDTEXT('      Tag="999"');
+      Text.ADDTEXT('      HorizontalContentAlignment="Right"');
+      Text.ADDTEXT('      VerticalContentAlignment="Center">0</Label>');
+      Text.ADDTEXT('  </Grid>');
+      Text.ADDTEXT('  </Canvas>');
+      Text.ADDTEXT('</Element>');
+      //<Host Width="25" Height="60" BackColor="White"/>');
+      Text.ADDTEXT('<Addin AllowCaption="True"/>');
+      Text.ADDTEXT('<SetEvent Object="btnCe" Name="Click"/>');
+      Text.ADDTEXT('<SetEvent Object="btnC" Name="Click"/>');
+      Text.ADDTEXT('<SetEvent Object="btnNum0" Name="Click"/>');
+      Text.ADDTEXT('<SetEvent Object="btnNum1" Name="Click"/>');
+      Text.ADDTEXT('<SetEvent Object="btnNum2" Name="Click"/>');
+      Text.ADDTEXT('<SetEvent Object="btnNum3" Name="Click"/>');
+      Text.ADDTEXT('<SetEvent Object="btnNum4" Name="Click"/>');
+      Text.ADDTEXT('<SetEvent Object="btnNum5" Name="Click"/>');
+      Text.ADDTEXT('<SetEvent Object="btnNum6" Name="Click"/>');
+      Text.ADDTEXT('<SetEvent Object="btnNum7" Name="Click"/>');
+      Text.ADDTEXT('<SetEvent Object="btnNum8" Name="Click"/>');
+      Text.ADDTEXT('<SetEvent Object="btnNum9" Name="Click"/>');
+      Text.ADDTEXT('</Root>');
+    END;
+
+    PROCEDURE SetResult@1000000002();
+    BEGIN
+      CLEAR(Text);
+      Text.ADDTEXT('<Root>');
+      IF Result ='' THEN
+        Text.ADDTEXT('  <SetProperty Object="lblResult" Name="Content" Type="System.String"><string>0</string></SetProperty>')
+      ELSE
+        Text.ADDTEXT('  <SetProperty Object="lblResult" Name="Content" Type="System.String"><string>'+Result+'</string></SetProperty>');
+      Text.ADDTEXT('</Root>');
+      //CurrPage.UPDATE(FALSE);
+    END;
+
+    BEGIN
+    {
+      Text passed into the plugin must have this structure:
+
+      <SomeRootElement>
+        <Element>
+          //there is XAML describing the controls which should be added into the addin, the XAML must include correct name spaces
+        </Element>
+        <Host <attributexxx>="<zzz>" <attributeaaa>="<bbb>"/>
+        <Addin <attributexxx>="<ZZZ>"/>
+        <SetProperty Object="<objname>" Name="<name of property>" Type="<TypeName>">Value<\SetProperty>
+        <SetEvent Object="<objname>" Name="<EventName>"/>"
+        <GetProperty Object="<objname>" Name="<name of property\>
+      </SomeRootElement>
+
+
+      Attributes of Host element are setting values for properties of ElementHost class used to host the WPF. Which properties could be
+      set you can find e.g. on MSDN documentation for ElementHost class.
+
+      Attributes of Addin element is used to set properties of the addin itself. Right now there is only one property - AllowCaption. This
+      is used to hide/display caption for the field. It could be used only when the value is set during OnInit trigger, later it have no
+      effect to the addin, because the addin is already displayed.
+
+      All elements are optional. You can set only element, host or addin if you want.
+
+      SetProperty set the selected property of named object to entered value. The type is used to correctly convert the value into
+      target type (e.g. when setting Color property with Color type through string "White", the type will be "System.String")
+
+      SetEvent connect the selected event of named object to internal handlers to fire the NAV event inside the page. Right now there
+      are internal handlers for event of type RoutedEventHandler and MouseEventHandler.
+
+      GetProperty fires the trigger with Tag= tag of the object and Data containing XML with value of the property.
+    }
+    END.
+  }
+}
+
